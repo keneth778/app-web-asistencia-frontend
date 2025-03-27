@@ -1,0 +1,78 @@
+/* componentes/login/login.css */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    background: url('https://static.wixstatic.com/media/d1b317_74db57de2e37449c86c97e13d54be084~mv2.jpg') no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed;
+    image-rendering: high-quality;
+}
+
+.login-container {
+    margin: auto;
+    max-width: 400px;
+    width: 90%;
+    padding: 25px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: rgba(249, 249, 249, 0.92);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+
+/* Mantengo tus estilos originales con mejoras mínimas */
+.login-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.login-container button:hover {
+    background-color: #0069d9;
+}
+
+.login-container .error {
+    color: #dc3545;
+    margin-top: 15px;
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Asegura buen contraste en cualquier fondo */
+@media (max-width: 768px) {
+    .login-container {
+        padding: 20px;
+        margin: 15px;
+    }
+    
+    body {
+        background-attachment: scroll; /* Mejor rendimiento en móviles */
+    }
+}

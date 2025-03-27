@@ -1,0 +1,56 @@
+/* componentes/funcionesAsistencia/asistencia.css */
+.btn-asistencia {
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* Estado inicial (sin marcar) */
+.btn-marcar-presente {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-marcar-ausente {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Estado cuando está presente */
+.estado-presente {
+    background-color: #28a745 !important;
+    transform: scale(1.05);
+}
+
+/* Estado cuando está ausente */
+.estado-ausente {
+    background-color: #dc3545 !important;
+    transform: scale(1.05);
+}
+
+.estudiante-marcado {
+    position: relative;
+    overflow: hidden;
+}
+
+.estudiante-marcado::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: currentColor;
+}
+
+.estudiante-marcado-presente::after {
+    background-color: #28a745;
+}
+
+.estudiante-marcado-ausente::after {
+    background-color: #dc3545;
+}
