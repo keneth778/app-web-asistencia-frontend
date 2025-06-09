@@ -1,3 +1,4 @@
+//login.js
 // Exporta la función principal para que pueda ser utilizada por otros módulos
 export const renderLogin = () => {
   // Obtiene el elemento raíz donde se renderizará el login

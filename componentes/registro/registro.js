@@ -1,4 +1,4 @@
-/**
+/*registro.js*
  * Función principal que renderiza y gestiona el formulario de registro
  * @export {function} Permite su uso en otros módulos
  */
