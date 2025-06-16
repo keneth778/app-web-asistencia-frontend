@@ -1,0 +1,97 @@
+/* componentes/graficas/graficas.css */
+
+.graficas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.graficas-container.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.graficas-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.graficas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.graficas-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.close-graficas {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.grafica-container {
+  width: 100%;
+  height: 300px;
+  margin-bottom: 20px;
+}
+
+.grafica-resumen {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.resumen-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.resumen-label {
+  font-weight: 500;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.resumen-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .grafica-resumen {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .grafica-container {
+    height: 250px;
+  }
+}

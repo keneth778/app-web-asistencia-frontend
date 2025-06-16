@@ -4,26 +4,32 @@ import { renderRegistro } from './componentes/registro/registro.js';
 import { DOM as gradosDOM } from './componentes/grados/grados.js';
 import { renderRecuperarContraseña } from './componentes/recuperarContraseña/recuperarContraseña.js'; 
 import { initCoordinador } from './componentes/coordinador/coordinador.js';
+import { initAdmin } from './componentes/admin/admin.js';
 
 function setupRouter() {
   const root = document.getElementById('root');
   let idProfesorActual = null;
   let esCoordinador = false;
+  let esAdmin = false;
 
   function navigate(page, data = {}) {
     if (page === 'login') {
       esCoordinador = false;
+      esAdmin = false;
       renderLogin();
     } else if (page === 'registro') {
       renderRegistro();
     } else if (page === 'grados') {
       idProfesorActual = data.idProfesor;
-      gradosDOM(idProfesorActual, false); // No es coordinador
+      gradosDOM(idProfesorActual, esCoordinador || esAdmin);
     } else if (page === 'recuperar') {
       renderRecuperarContraseña();
     } else if (page === 'coordinador') {
       esCoordinador = true;
       initCoordinador();
+    } else if (page === 'admin') {
+      esAdmin = true;
+      initAdmin();
     } else {
       renderLogin();
     }
@@ -39,7 +45,9 @@ function setupRouter() {
   });
 
   window.addEventListener('loginExitoso', (e) => {
-    if (e.detail.tipo === 'coordinador') {
+    if (e.detail.tipo === 'admin') {
+      navigate('admin');
+    } else if (e.detail.tipo === 'coordinador') {
       navigate('coordinador');
     } else {
       navigate('grados', { idProfesor: e.detail.id });

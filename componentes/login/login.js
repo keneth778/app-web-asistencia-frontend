@@ -1,4 +1,5 @@
-// componentes/login/login.js
+
+
 export const renderLogin = () => {
   const root = document.getElementById('root');
   
@@ -10,8 +11,6 @@ export const renderLogin = () => {
         <input type="password" id="password" placeholder="Contraseña" required>
         <button type="submit">Iniciar Sesión</button>
       </form>
-      <p>¿No tienes una cuenta? <a href="#" id="registerLink">Regístrate</a></p>
-      <p><a href="#" id="recuperarLink">¿Olvidaste tu contraseña?</a></p>
       <div class="error" id="loginError"></div>
     </div>
   `;
@@ -43,6 +42,7 @@ export const renderLogin = () => {
           email: data.user.email,
           tipo: data.user.tipo
         }
+        
       }));
     } catch (error) {
       console.error('Error en el login:', error);

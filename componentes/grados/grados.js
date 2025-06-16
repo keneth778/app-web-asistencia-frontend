@@ -2,7 +2,8 @@
 import { renderAgregarAlumno, configurarEventListeners } from '../agregarAlumno/agregarAlumno.js';
 import { renderBotonEliminar, configurarEliminarAlumno } from '../eliminarAlumno/eliminarAlumno.js';
 import { initUniforme } from '../uniforme/uniforme.js';
-
+import { initGraficas } from '../graficas/graficas.js';
+import { mostrarModalAsistenciaTomada } from '../asistenciaTomada/asistenciaTomada.js';
 let cambiosPendientes = []; // Almacena los cambios antes de guardar
 
 /**
@@ -97,8 +98,6 @@ function cargarAlumnos(estudiantes, idGrado, idProfesor, esCoordinador) {
   const listaEstudiantes = document.getElementById('listaEstudiantes');
   
   let htmlContent = `<h3>Estudiantes del Grado</h3>`;
-  
-  // Mostrar agregar alumno tanto para profesores como coordinadores
   htmlContent += renderAgregarAlumno(idGrado);
 
   if (estudiantes.length > 0) {
@@ -118,10 +117,16 @@ function cargarAlumnos(estudiantes, idGrado, idProfesor, esCoordinador) {
     `;
   }
 
-  if (estudiantes.length === 0) {
-    htmlContent += '<p>No hay estudiantes en este grado.</p>';
-  } else {
+  if (estudiantes.length > 0) {
     htmlContent += `
+      <div class="grados-header">
+        <h3>Estudiantes del Grado</h3>
+        <button class="btn-graficas-grado" 
+          onclick="abrirGraficasGradoModal(${idGrado}, 'Grado ${idGrado}')"
+          title="Ver estadísticas del grado">
+          📊 Estadísticas del Grado
+        </button>
+      </div>
       <ul class="lista-estudiantes">
         ${estudiantes.map(estudiante => `
           <li data-id="${estudiante.id_estudiante}">
@@ -132,8 +137,14 @@ function cargarAlumnos(estudiantes, idGrado, idProfesor, esCoordinador) {
                 title="Registrar uniforme">
                 👕
               </button>
+              <button class="btn-graficas" 
+                onclick="abrirGraficasModal(${estudiante.id_estudiante}, '${estudiante.nombre.replace(/'/g, "\\'")}')"
+                title="Ver estadísticas">
+                📊
+              </button>
               ${renderBotonEliminar(estudiante.id_estudiante, estudiante.nombre)}
             </div>
+            
             <div class="controles-asistencia">
               <button class="btn-presente" 
                 onclick="marcarPresente(${estudiante.id_estudiante})">
@@ -155,6 +166,10 @@ function cargarAlumnos(estudiantes, idGrado, idProfesor, esCoordinador) {
   if (estudiantes.length > 0) {
     htmlContent += `
       <div class="botones-guardar-container">
+        <button class="btn-estadisticas-generales" 
+          onclick="abrirEstadisticasGenerales(${idProfesor})">
+          📊 Ver Estadísticas Generales
+        </button>
         <button class="btn-guardar" 
           onclick="guardarAsistencias(${idGrado}, ${idProfesor}, ${esCoordinador})">
           Guardar Asistencias
@@ -164,10 +179,10 @@ function cargarAlumnos(estudiantes, idGrado, idProfesor, esCoordinador) {
   }
 
   listaEstudiantes.innerHTML = htmlContent;
-  
   configurarEventListeners(idGrado);
   configurarEliminarAlumno(idProfesor);
 }
+  
 // Modificar guardarAsistencias para aceptar esCoordinador
 window.guardarAsistencias = async function(idGrado, idProfesor, esCoordinador) {
   if (cambiosPendientes.length === 0) {
@@ -213,25 +228,113 @@ window.guardarAsistencias = async function(idGrado, idProfesor, esCoordinador) {
 /**
  * Marca un estudiante como presente (solo visualmente)
  */
-window.marcarPresente = function(idEstudiante) {
-  const estadoElement = document.getElementById(`estado-${idEstudiante}`);
-  estadoElement.textContent = '✅'; // Emoji de check verde
-  estadoElement.style.color = ''; // Color por defecto
-  
-  // Guarda el cambio pendiente
-  cambiosPendientes = cambiosPendientes.filter(c => c.idEstudiante !== idEstudiante);
-  cambiosPendientes.push({ idEstudiante, presente: true });
+window.marcarPresente = async function(idEstudiante) {
+  try {
+    // 1. Verificar el horario
+    const horarioResponse = await fetch('http://localhost:3000/verificar-horario-asistencia');
+    const horario = await horarioResponse.json();
+    
+    if (!horario.permitido) {
+      mostrarModalFueraDeHorario(idEstudiante);
+      return;
+    }
+
+    // 2. Verificar si ya tiene asistencia hoy
+    const asistenciaResponse = await fetch(`http://localhost:3000/asistencia-hoy-alumno/${idEstudiante}`);
+    const data = await asistenciaResponse.json();
+    
+    if (data.tiene_asistencia) {
+      mostrarModalAsistenciaTomada(data.asistencia);
+      return;
+    }
+
+    // 3. Marcar como presente localmente
+    const estadoElement = document.getElementById(`estado-${idEstudiante}`);
+    estadoElement.textContent = '✅';
+    
+    // Actualizar cambios pendientes
+    cambiosPendientes = cambiosPendientes.filter(c => c.idEstudiante !== idEstudiante);
+    cambiosPendientes.push({ 
+      idEstudiante, 
+      presente: true,
+      llegoTarde: false
+    });
+    
+    mostrarMensajeTemporal('Estudiante marcado como presente');
+    
+  } catch (error) {
+    console.error('Error marcando presente:', error);
+    mostrarMensajeTemporal('❌ Error al marcar como presente');
+  }
 };
 
-/**
- * Marca un estudiante como ausente (solo visualmente)
- */
-window.marcarAusente = function(idEstudiante) {
-  const estadoElement = document.getElementById(`estado-${idEstudiante}`);
-  estadoElement.textContent = '❌'; // Emoji de X roja
-  estadoElement.style.color = ''; // Color por defecto
+// Modal para cuando está fuera de horario
+function mostrarModalFueraDeHorario(idEstudiante) {
+  const modalHTML = `
+    <div class="modal-fuera-horario" id="modal-fuera-horario">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Fuera del horario de asistencia</h3>
+          <button class="close-modal" onclick="cerrarModalFueraHorario()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Solo puedes marcar como ausente o tarde fuera del horario establecido.</p>
+          <div class="opciones-fuera-horario">
+            <button class="btn-tarde" onclick="marcarTardeFueraHorario(${idEstudiante})">
+              Llegó Tarde
+            </button>
+            <button class="btn-ausente" onclick="marcarAusente(${idEstudiante})">
+              Ausente
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (!document.getElementById('modal-fuera-horario')) {
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+  }
   
-  // Guarda el cambio pendiente
+  const modal = document.getElementById('modal-fuera-horario');
+  modal.style.display = 'flex';
+}
+
+window.marcarTardeFueraHorario = function(idEstudiante) {
+  const estadoElement = document.getElementById(`estado-${idEstudiante}`);
+  estadoElement.textContent = '⏰';
+  
+  cambiosPendientes = cambiosPendientes.filter(c => c.idEstudiante !== idEstudiante);
+  cambiosPendientes.push({ 
+    idEstudiante, 
+    presente: true,
+    llegoTarde: true
+  });
+  
+  cerrarModalFueraHorario();
+  mostrarMensajeTemporal('Estudiante marcado como llegó tarde');
+};
+
+window.cerrarModalFueraHorario = function() {
+  const modal = document.getElementById('modal-fuera-horario');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+};
+
+window.marcarAusente = async function(idEstudiante) {
+  // Verificar si ya tiene asistencia hoy
+  const response = await fetch(`http://localhost:3000/asistencia-hoy-alumno/${idEstudiante}`);
+  const data = await response.json();
+  
+  if (data.tiene_asistencia) {
+    mostrarModalAsistenciaTomada(data.asistencia);
+    return;
+  }
+
+  const estadoElement = document.getElementById(`estado-${idEstudiante}`);
+  estadoElement.textContent = '❌';
+  
   cambiosPendientes = cambiosPendientes.filter(c => c.idEstudiante !== idEstudiante);
   cambiosPendientes.push({ idEstudiante, presente: false });
 };
@@ -239,46 +342,43 @@ window.marcarAusente = function(idEstudiante) {
 /**
  * Envía todos los cambios pendientes al servidor
  */
-window.guardarAsistencias = async function(idGrado, idProfesor) {
+window.guardarAsistencias = async function(idGrado, idProfesor, esCoordinador) {
   if (cambiosPendientes.length === 0) {
     alert('No hay cambios para guardar');
     return;
   }
 
   try {
-    // Deshabilita el botón mientras se guarda
     const btnGuardar = document.querySelector('.btn-guardar');
     btnGuardar.disabled = true;
     btnGuardar.textContent = 'Guardando...';
 
-    // Envía cada cambio al servidor
     for (const cambio of cambiosPendientes) {
       const response = await fetch('http://localhost:3000/asistencia', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id_estudiante: cambio.idEstudiante,
-          id_profesor: idProfesor,
+          id_profesor: esCoordinador ? idProfesor : window.idProfesorActual,
           id_grado: idGrado,
-          presente: cambio.presente
+          presente: cambio.presente,
+          llego_tarde: cambio.llegoTarde || false // Asegurarse de enviar este campo
         })
       });
 
       if (!response.ok) {
-        throw new Error('Error al guardar asistencia');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al guardar asistencia');
       }
     }
 
-    // Limpia los cambios pendientes después de guardar
     cambiosPendientes = [];
-    alert('Asistencias guardadas correctamente');
-    
-    // Actualiza la lista (opcional)
+    mostrarMensajeTemporal('Asistencias guardadas correctamente');
     const estudiantes = await consultarAlumnosBackend(idGrado);
-    cargarAlumnos(estudiantes, idGrado, idProfesor);
+    cargarAlumnos(estudiantes, idGrado, idProfesor, esCoordinador);
   } catch (error) {
     console.error('Error:', error);
-    alert('Error al guardar las asistencias: ' + error.message);
+    mostrarMensajeTemporal(`Error: ${error.message}`);
   } finally {
     const btnGuardar = document.querySelector('.btn-guardar');
     if (btnGuardar) {
@@ -291,11 +391,20 @@ window.guardarAsistencias = async function(idGrado, idProfesor) {
 /**
  * Función principal del componente
  */
-export function DOM(idProfesor, esCoordinador = false) {
+export function DOM(idProfesor, esCoordinador = false, esAdmin = false) {
   const root = document.getElementById('root');
+  
+  // Determinar el texto del título según el tipo de usuario
+  let titulo = 'Selecciona un Grado';
+  if (esAdmin) {
+    titulo = 'Tomar Asistencia (Modo Administrador)';
+  } else if (esCoordinador) {
+    titulo = 'Tomar Asistencia (Modo Coordinador)';
+  }
+
   root.innerHTML = `
     <div class="grados-container">
-      <h2>${esCoordinador ? 'Tomar Asistencia (Modo Coordinador)' : 'Selecciona un Grado'}</h2>
+      <h2>${titulo}</h2>
       <select id="selectGrado">
         <option value="">-- Selecciona un grado --</option>
       </select>
@@ -307,8 +416,9 @@ export function DOM(idProfesor, esCoordinador = false) {
   initUniforme();
   
   // Cargar grados y configurar eventos
-  cargarGrados(idProfesor, esCoordinador);
+  cargarGrados(idProfesor, esCoordinador, esAdmin);
 }
+
 
 /**
  * Carga los grados del profesor

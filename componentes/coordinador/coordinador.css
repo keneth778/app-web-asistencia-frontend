@@ -264,13 +264,157 @@
   transform: translateY(-1px);
 }
 
-/* Responsive */
+/* Botón de ver gráfica */
+.btn-ver-grafica {
+  padding: 10px 20px;
+  background-color: #6f42c1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-right: 15px;
+}
+
+.btn-ver-grafica:hover {
+  background-color: #5a32a8;
+  transform: translateY(-2px);
+}
+
+.btn-ver-grafica:disabled {
+  background-color: #a78bfa;
+  transform: none;
+  cursor: wait;
+}
+
+/* Encabezado de la gráfica */
+.grafica-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.grafica-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #2c3e50;
+}
+
+.btn-cerrar-grafica {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 0 10px;
+}
+
+.btn-cerrar-grafica:hover {
+  color: #dc3545;
+}
+
+/* Contenedor de gráfica */
+.grafica-cumplimiento-container {
+  margin-top: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease;
+}
+
+/* --- RESPUESTAS MÓVILES ---------------------------------------------- */
 @media (max-width: 768px) {
+
+  /* contenedor principal */
+  .coordinador-container {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  /* cabecera: título + botón */
+  .coordinador-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .coordinador-title {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+
+  .btn-agregar-profesor {
+    width: 100%;
+    margin: 0;
+  }
+
+  /* tarjetas de profesor en una sola columna */
+  .profesores-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .profesor-card {
+    padding: 12px;
+  }
+
+  /* lista de grados: evita que el texto se corte con … */
+  .grado-item {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .btn-tomar-asistencia {
+    margin-left: auto;               /* empuja a la derecha si cabe */
+    margin-top: 6px;                 /* cae debajo en pantallas muy angostas */
+  }
+
+  /* sección “Agregar grado” ─ vertical */
   .agregar-grado-container {
     flex-direction: column;
+    padding-top: 10px;
   }
-  
+
+  .agregar-grado-container input,
   .btn-agregar-grado {
     width: 100%;
   }
+
+  /* modal */
+  .modal-content {
+    max-width: 90%;
+    padding: 20px 15px;
+  }
+
+  /* gráfica */
+  .grafica-cumplimiento-container {
+    margin-top: 20px;
+    padding: 15px;
+  }
+
+  .grafica-header h2 {
+    font-size: 1.2rem;
+  }
+}
+.contenedor-principal {
+  height: 100vh; /* o auto si prefieres */
+  overflow-y: auto; /* permite hacer scroll vertical */
+}
+
+
+/* Pantallas micro (≤ 480 px) ― reajustes rápidos */
+@media (max-width: 480px) {
+  .coordinador-title       { font-size: 1.3rem; }
+  .btn-agregar-profesor,
+  .btn-ver-grafica,
+  .btn-eliminar-profesor   { font-size: 0.9rem; padding: 8px 14px; }
+  .profesor-nombre         { font-size: 1.1rem; }
+  .btn-tomar-asistencia    { font-size: 0.8rem; }
 }

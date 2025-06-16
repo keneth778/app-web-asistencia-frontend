@@ -45,11 +45,102 @@ export function renderCoordinador() {
     </div>
   `;
 
+  
+  renderGraficaCumplimiento();
   // Cargar lista de profesores
   cargarProfesores();
 
   // Configurar eventos
   configurarEventos();
+}
+async function renderGraficaCumplimiento() {
+  try {
+    const response = await fetch('http://localhost:3000/asistencia-profesores');
+    if (!response.ok) throw new Error('Error al obtener datos');
+    const data = await response.json();
+
+    const container = document.createElement('div');
+    container.className = 'grafica-cumplimiento-container';
+    container.innerHTML = `
+      <h2>Cumplimiento de Asistencia por Profesor</h2>
+      <div class="grafica-container">
+        <canvas id="grafica-cumplimiento"></canvas>
+      </div>
+    `;
+
+    document.querySelector('.coordinador-container').appendChild(container);
+
+    // Espera a que el canvas esté en el DOM
+    setTimeout(() => {
+      const ctx = document.getElementById('grafica-cumplimiento').getContext('2d');
+      
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.map(prof => prof.nombre_profesor),
+          datasets: [{
+            label: 'Porcentaje de Cumplimiento',
+            data: data.map(prof => prof.porcentaje_cumplimiento || 0),
+            backgroundColor: data.map(prof => {
+              const porcentaje = prof.porcentaje_cumplimiento || 0;
+              return porcentaje > 80 ? 'rgba(40, 167, 69, 0.7)' :
+                     porcentaje > 50 ? 'rgba(255, 193, 7, 0.7)' :
+                                      'rgba(220, 53, 69, 0.7)';
+            }),
+            borderColor: data.map(prof => {
+              const porcentaje = prof.porcentaje_cumplimiento || 0;
+              return porcentaje > 80 ? 'rgba(40, 167, 69, 1)' :
+                     porcentaje > 50 ? 'rgba(255, 193, 7, 1)' :
+                                      'rgba(220, 53, 69, 1)';
+            }),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              title: {
+                display: true,
+                text: 'Porcentaje de Cumplimiento'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Profesores'
+              }
+            }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                afterLabel: function(context) {
+                  const prof = data[context.dataIndex];
+                  return `
+Grados: ${prof.grados_asignados}
+Estudiantes: ${prof.estudiantes_asignados}
+Días con registros: ${prof.dias_con_registros}
+Total registros: ${prof.total_registros}
+                  `;
+                }
+              }
+            }
+          }
+        }
+      });
+    }, 100);
+  } catch (error) {
+    console.error('Error:', error);
+    const container = document.querySelector('.coordinador-container');
+    container.insertAdjacentHTML('beforeend', `
+      <div class="error-grafica">
+        Error al cargar la gráfica de cumplimiento: ${error.message}
+      </div>
+    `);
+  }
 }
 
 /**
@@ -322,6 +413,7 @@ function tomarAsistencia(idGrado, idProfesor) {
   // Usamos el mismo componente de grados pero con permisos de coordinador
   gradosDOM(idProfesor, true); // true indica que es coordinador
 }
+
 
 /**
  * Configuración inicial del coordinador
