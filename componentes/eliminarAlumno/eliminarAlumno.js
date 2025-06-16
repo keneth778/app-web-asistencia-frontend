@@ -232,7 +232,7 @@ window.eliminarAlumno = async function() {
     btnConfirmar.innerHTML = '<span class="loading-spinner"></span> Eliminando...';
     
     // Enviar solicitud al servidor con el ID en la URL
-    const response = await fetch(`http://localhost:3000/eliminar-estudiante/${modalState.idEstudiante}`, {
+    const response = await fetch(`https://app-web-asistencia-backend.onrender.com/eliminar-estudiante/${modalState.idEstudiante}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

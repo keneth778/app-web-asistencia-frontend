@@ -151,7 +151,7 @@ window.agregarNuevoAlumno = async function(idGrado) {
     btnAgregar.textContent = 'Agregando...';
     
     // Enviar solicitud al servidor
-    const response = await fetch('http://localhost:3000/agregar-estudiante', {
+    const response = await fetch('https://app-web-asistencia-backend.onrender.com/agregar-estudiante', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

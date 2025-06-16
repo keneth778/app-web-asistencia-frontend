@@ -11,7 +11,7 @@ let cambiosPendientes = []; // Almacena los cambios antes de guardar
  */
 async function consultarAlumnosBackend(idGrado) {
   try {
-    const response = await fetch(`http://localhost:3000/estudiantes/${idGrado}`);
+    const response = await fetch(`https://app-web-asistencia-backend.onrender.com/estudiantes/${idGrado}`);
     if (!response.ok) throw new Error('Error al obtener estudiantes');
     return await response.json();
   } catch (error) {
@@ -196,7 +196,7 @@ window.guardarAsistencias = async function(idGrado, idProfesor, esCoordinador) {
     btnGuardar.textContent = 'Guardando...';
 
     for (const cambio of cambiosPendientes) {
-      const response = await fetch('http://localhost:3000/asistencia', {
+      const response = await fetch('https://app-web-asistencia-backend.onrender.com/asistencia', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -231,7 +231,7 @@ window.guardarAsistencias = async function(idGrado, idProfesor, esCoordinador) {
 window.marcarPresente = async function(idEstudiante) {
   try {
     // 1. Verificar el horario
-    const horarioResponse = await fetch('http://localhost:3000/verificar-horario-asistencia');
+    const horarioResponse = await fetch('https://app-web-asistencia-backend.onrender.com/verificar-horario-asistencia');
     const horario = await horarioResponse.json();
     
     if (!horario.permitido) {
@@ -240,7 +240,7 @@ window.marcarPresente = async function(idEstudiante) {
     }
 
     // 2. Verificar si ya tiene asistencia hoy
-    const asistenciaResponse = await fetch(`http://localhost:3000/asistencia-hoy-alumno/${idEstudiante}`);
+    const asistenciaResponse = await fetch(`https://app-web-asistencia-backend.onrender.com/asistencia-hoy-alumno/${idEstudiante}`);
     const data = await asistenciaResponse.json();
     
     if (data.tiene_asistencia) {
@@ -324,7 +324,7 @@ window.cerrarModalFueraHorario = function() {
 
 window.marcarAusente = async function(idEstudiante) {
   // Verificar si ya tiene asistencia hoy
-  const response = await fetch(`http://localhost:3000/asistencia-hoy-alumno/${idEstudiante}`);
+  const response = await fetch(`https://app-web-asistencia-backend.onrender.com/asistencia-hoy-alumno/${idEstudiante}`);
   const data = await response.json();
   
   if (data.tiene_asistencia) {
@@ -354,7 +354,7 @@ window.guardarAsistencias = async function(idGrado, idProfesor, esCoordinador) {
     btnGuardar.textContent = 'Guardando...';
 
     for (const cambio of cambiosPendientes) {
-      const response = await fetch('http://localhost:3000/asistencia', {
+      const response = await fetch('https://app-web-asistencia-backend.onrender.com/asistencia', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -425,7 +425,7 @@ export function DOM(idProfesor, esCoordinador = false, esAdmin = false) {
  */
 async function cargarGrados(idProfesor, esCoordinador = false) {
   try {
-    const response = await fetch(`http://localhost:3000/grados/${idProfesor}`);
+    const response = await fetch(`https://app-web-asistencia-backend.onrender.com/grados/${idProfesor}`);
     if (!response.ok) throw new Error('Error al obtener grados');
     const grados = await response.json();
     renderGrados(grados, idProfesor, esCoordinador);

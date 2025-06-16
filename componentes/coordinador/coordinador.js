@@ -55,7 +55,7 @@ export function renderCoordinador() {
 }
 async function renderGraficaCumplimiento() {
   try {
-    const response = await fetch('http://localhost:3000/asistencia-profesores');
+    const response = await fetch('https://app-web-asistencia-backend.onrender.com/asistencia-profesores');
     if (!response.ok) throw new Error('Error al obtener datos');
     const data = await response.json();
 
@@ -148,7 +148,7 @@ Total registros: ${prof.total_registros}
  */
 async function cargarProfesores() {
   try {
-    const response = await fetch('http://localhost:3000/profesores');
+    const response = await fetch('https://app-web-asistencia-backend.onrender.com/profesores');
     if (!response.ok) throw new Error('Error al obtener profesores');
     
     const profesores = await response.json();
@@ -230,7 +230,7 @@ window.agregarGradoAProfesor = async function(idProfesor) {
   }
 
   try {
-    const response = await fetch('http://localhost:3000/asignar-grado', {
+    const response = await fetch('https://app-web-asistencia-backend.onrender.com/asignar-grado', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -281,7 +281,7 @@ function mostrarMensajeExito(mensaje) {
  */
   async function obtenerGradosProfesor(idProfesor) {
     try {
-      const response = await fetch(`http://localhost:3000/grados/${idProfesor}`);
+      const response = await fetch(`https://app-web-asistencia-backend.onrender.com/grados/${idProfesor}`);
       if (!response.ok) return [];
       return await response.json();
     } catch (error) {
@@ -326,7 +326,7 @@ form.addEventListener('submit', async (e) => {
   
   try {
     // 1. Registrar al profesor
-    const response = await fetch('http://localhost:3000/registro', {
+    const response = await fetch('https://app-web-asistencia-backend.onrender.com/registro', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nombre, email, password })
@@ -344,7 +344,7 @@ form.addEventListener('submit', async (e) => {
     const gradosIniciales = ['Primero', 'Segundo', 'Tercero'];
     
     for (const nombreGrado of gradosIniciales) {
-      await fetch('http://localhost:3000/asignar-grado', {
+      await fetch('https://app-web-asistencia-backend.onrender.com/asignar-grado', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -389,7 +389,7 @@ form.addEventListener('submit', async (e) => {
  */
 async function eliminarProfesor(idProfesor) {
   try {
-    const response = await fetch(`http://localhost:3000/profesores/${idProfesor}`, {
+    const response = await fetch(`https://app-web-asistencia-backend.onrender.com/profesores/${idProfesor}`, {
       method: 'DELETE'
     });
     

@@ -2,7 +2,6 @@
 import { renderLogin } from './componentes/login/login.js';
 import { renderRegistro } from './componentes/registro/registro.js';
 import { DOM as gradosDOM } from './componentes/grados/grados.js';
-import { renderRecuperarContraseña } from './componentes/recuperarContraseña/recuperarContraseña.js'; 
 import { initCoordinador } from './componentes/coordinador/coordinador.js';
 import { initAdmin } from './componentes/admin/admin.js';
 

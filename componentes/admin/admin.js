@@ -122,7 +122,7 @@ async function configurarHorarioAsistencia() {
       // Obtener el token del localStorage
       const token = localStorage.getItem('token');
       
-      const response = await fetch('http://localhost:3000/establecer-horario-asistencia', {
+      const response = await fetch('https://app-web-asistencia-backend.onrender.com/establecer-horario-asistencia', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -152,7 +152,7 @@ async function cargarHorarioActual() {
   try {
     const token = localStorage.getItem('token');
     
-    const response = await fetch('http://localhost:3000/horario-asistencia', {
+    const response = await fetch('https://app-web-asistencia-backend.onrender.com/horario-asistencia', {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -174,7 +174,7 @@ async function cargarHorarioActual() {
 
 async function cargarCoordinadores() {
   try {
-    const response = await fetch('http://localhost:3000/coordinadores');
+    const response = await fetch('https://app-web-asistencia-backend.onrender.com/coordinadores');
     if (!response.ok) throw new Error('Error al obtener coordinadores');
     const coordinadores = await response.json();
     renderCoordinadores(coordinadores);
@@ -188,7 +188,7 @@ async function cargarCoordinadores() {
 
 async function cargarProfesores() {
   try {
-    const response = await fetch('http://localhost:3000/profesores');
+    const response = await fetch('https://app-web-asistencia-backend.onrender.com/profesores');
     if (!response.ok) throw new Error('Error al obtener profesores');
     const profesores = await response.json();
     renderProfesores(profesores);
@@ -273,7 +273,7 @@ function configurarEventos() {
     const password = document.getElementById('passwordCoordinador').value;
     
     try {
-      const response = await fetch('http://localhost:3000/coordinadores', {
+      const response = await fetch('https://app-web-asistencia-backend.onrender.com/coordinadores', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, email, password })
@@ -310,7 +310,7 @@ function configurarEventos() {
     const password = document.getElementById('passwordProfesor').value;
     
     try {
-      const response = await fetch('http://localhost:3000/registro', {
+      const response = await fetch('https://app-web-asistencia-backend.onrender.com/registro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, email, password })
@@ -381,7 +381,7 @@ function configurarEventos() {
 
 async function eliminarCoordinador(idCoordinador) {
   try {
-    const response = await fetch(`http://localhost:3000/coordinadores/${idCoordinador}`, {
+    const response = await fetch(`https://app-web-asistencia-backend.onrender.com/coordinadores/${idCoordinador}`, {
       method: 'DELETE'
     });
     
@@ -399,7 +399,7 @@ async function eliminarCoordinador(idCoordinador) {
 
 async function eliminarProfesor(idProfesor) {
   try {
-    const response = await fetch(`http://localhost:3000/profesores/${idProfesor}`, {
+    const response = await fetch(`https://app-web-asistencia-backend.onrender.com/profesores/${idProfesor}`, {
       method: 'DELETE'
     });
     

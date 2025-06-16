@@ -64,7 +64,7 @@ window.guardarCambiosAsistencia = async function(idAsistencia) {
     btnGuardar.disabled = true;
     btnGuardar.textContent = 'Guardando...';
 
-    const response = await fetch(`http://localhost:3000/asistencia/${idAsistencia}`, {
+    const response = await fetch(`https://app-web-asistencia-backend.onrender.com/asistencia/${idAsistencia}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(nuevoEstado)

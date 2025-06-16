@@ -180,7 +180,7 @@ window.cerrarEstadisticasGeneralesModal = function() {
  */
 async function cargarDatosYRenderizarGrafica(idEstudiante) {
   try {
-    const response = await fetch(`http://localhost:3000/asistencia-estudiante/${idEstudiante}`);
+    const response = await fetch(`https://app-web-asistencia-backend.onrender.com/asistencia-estudiante/${idEstudiante}`);
     if (!response.ok) throw new Error('Error al obtener datos de asistencia');
     
     const data = await response.json();
@@ -204,7 +204,7 @@ async function cargarDatosYRenderizarGrafica(idEstudiante) {
  */
 async function cargarDatosYRenderizarGraficaGrado(idGrado) {
   try {
-    const response = await fetch(`http://localhost:3000/asistencia-grado/${idGrado}`);
+    const response = await fetch(`https://app-web-asistencia-backend.onrender.com/asistencia-grado/${idGrado}`);
     if (!response.ok) throw new Error('Error al obtener datos de asistencia del grado');
     
     const data = await response.json();
@@ -229,7 +229,7 @@ async function cargarDatosYRenderizarGraficaGrado(idGrado) {
  */
 async function cargarDatosYRenderizarEstadisticasGenerales(idProfesor) {
   try {
-    const response = await fetch(`http://localhost:3000/asistencia-profesor/${idProfesor}`);
+    const response = await fetch(`https://app-web-asistencia-backend.onrender.com/asistencia-profesor/${idProfesor}`);
     if (!response.ok) throw new Error('Error al obtener estadísticas');
     
     const data = await response.json();

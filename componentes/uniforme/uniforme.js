@@ -163,7 +163,7 @@ window.guardarUniforme = async function(idEstudiante) {
   }
   
   try {
-    const response = await fetch('http://localhost:3000/registrar-uniforme', {
+    const response = await fetch('https://app-web-asistencia-backend.onrender.com/registrar-uniforme', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

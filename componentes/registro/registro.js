@@ -45,7 +45,7 @@ export const renderRegistro = () => {
       // ---------------------------
       // 1. REGISTRO DEL PROFESOR
       // ---------------------------
-      const registroResponse = await fetch('http://localhost:3000/registro', {
+      const registroResponse = await fetch('https://app-web-asistencia-backend.onrender.com/registro', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json' // Indica que enviamos JSON
@@ -69,7 +69,7 @@ export const renderRegistro = () => {
       // 2. ASIGNACIÓN DE GRADOS INICIALES
       // -------------------------------
       const asignacionResponse = await fetch(
-        'http://localhost:3000/asignar-grados-iniciales', 
+        'https://app-web-asistencia-backend.onrender.com/asignar-grados-iniciales', 
         {
           method: 'POST',
           headers: { 
